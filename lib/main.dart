@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'pages/auth/auth_gate.dart';
+import 'package:provider/provider.dart';
+import 'models/topic_database.dart';
+import 'theme/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +14,17 @@ Future<void> main() async {
     url: dotenv.env['URL']!,
     anonKey: dotenv.env['ANON_KEY']!
   );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        // Topic Provider (updated for Supabase)
+        ChangeNotifierProvider(create: (context) => TopicDatabase()),
+        // Theme Provider
+        ChangeNotifierProvider(create: (context) => ThemeProvider())
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
